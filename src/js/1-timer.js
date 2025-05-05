@@ -23,9 +23,10 @@ const timer = {
 
   start() {
     this.initTime = new Date(userSelectedDate.value);
-    startBtn.classList.remove('active');
+    startBtn.classList.remove('active-btn');
     startBtn.disabled = true;
     userSelectedDate.disabled = true;
+  
     
     
     
@@ -57,26 +58,31 @@ const timer = {
 
 startBtn.addEventListener('click', () => {  
   timer.start();
-  
 });
 
 flatpickr(userSelectedDate, {
   enableTime: true,
   time_24hr: true,
   defaultDate: new Date(),
+  minDate: "today",
   minuteIncrement: 1,
   onClose(selectedDates) {
-    if (selectedDates.length > 0) {
-      let selectedDate = selectedDates[0];
-      if (selectedDate.getTime() < new Date().getTime()) {
-        iziToast.error({ message: 'Please choose a date in the future' });
-        startBtn.classList.remove('active');
-      }  else {
-        startBtn.classList.add('active');
-      }
+    let selectedDate = selectedDates[0];
+    if (selectedDate.getTime() > new Date().getTime()) {
+      startBtn.disabled = false;
+      startBtn.classList.add('active-btn');
+    } else {
+      startBtn.disabled = true;
+      iziToast.error({
+          title: 'Error',
+            message: 'Please choose a date in the future!',
+            position: 'topRight',
+            color: 'red',
+            timeout: 5000,});
+      }  
     }
   },
-});
+);
 
 
 function convertMs(ms) {
